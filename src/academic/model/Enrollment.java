@@ -18,22 +18,6 @@ public class Enrollment {
         this.semester = semester;
     }
 
-    public String getCourseCode() {
-        return courseCode;
-    }
-
-    public String getStudentId() {
-        return studentId;
-    }
-
-    public String getAcademicYear() {
-        return academicYear;
-    }
-
-    public String getSemester() {
-        return semester;
-    }
-
     @Override
     public String toString() {
         return courseCode + "|" + studentId + "|" + academicYear + "|" + semester + "|None";
