@@ -74,10 +74,6 @@ public class Driver1 {
 
         // Sort courses by ID
         Collections.sort(courses, Comparator.comparing(Course::getId));
-        // Sort students by ID
-        Collections.sort(students, Comparator.comparing(Student::getId));
-        // Sort enrollments by course ID and then by student ID
-        Collections.sort(enrollments, Comparator.comparing(Enrollment::getCourseId).thenComparing(Enrollment::getStudentId));
 
         for (Course course : courses) {
             System.out.println(course);
