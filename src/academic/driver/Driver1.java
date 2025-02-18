@@ -3,8 +3,10 @@ package academic.driver;
 import academic.model.Course;
 import academic.model.Student;
 import academic.model.Enrollment;
+
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Scanner;
 
 public class Driver1 {
@@ -13,9 +15,6 @@ public class Driver1 {
         ArrayList<Course> courses = new ArrayList<>();
         ArrayList<Student> students = new ArrayList<>();
         ArrayList<Enrollment> enrollments = new ArrayList<>();
-        HashSet<String> courseIds = new HashSet<>();
-        HashSet<String> studentIds = new HashSet<>();
-        HashSet<String> enrollmentIds = new HashSet<>();
 
         while (true) {
             String input = scanner.nextLine();
@@ -29,45 +28,39 @@ public class Driver1 {
             String command = parts[0];
 
             if (command.equals("course-add") && parts.length == 5) {
-                if (!courseIds.contains(parts[1])) {
-                    courses.add(new Course(parts[1], parts[2], Integer.parseInt(parts[3]), parts[4]));
-                    courseIds.add(parts[1]);
+                Course newCourse = new Course(parts[1], parts[2], Integer.parseInt(parts[3]), parts[4]);
+                if (!courses.contains(newCourse)) {
+                    courses.add(newCourse);
                 }
-            } 
-            else if (command.equals("student-add") && parts.length == 5) {
-                if (!studentIds.contains(parts[1])) {
-                    students.add(new Student(parts[1], parts[2], Integer.parseInt(parts[3]), parts[4]));
-                    studentIds.add(parts[1]);
+            } else if (command.equals("student-add") && parts.length == 5) {
+                Student newStudent = new Student(parts[1], parts[2], Integer.parseInt(parts[3]), parts[4]);
+                if (!students.contains(newStudent)) {
+                    students.add(newStudent);
                 }
-            } 
-            else if (command.equals("enrollment-add") && parts.length == 5) {
-                String enrollmentId = parts[1] + "#" + parts[2] + "#" + parts[3] + "#" + parts[4];
-                if (!enrollmentIds.contains(enrollmentId)) {
-                    enrollments.add(new Enrollment(parts[1], parts[2], parts[3], parts[4]));
-                    enrollmentIds.add(enrollmentId);
+            } else if (command.equals("enrollment-add") && parts.length == 5) {
+                Enrollment newEnrollment = new Enrollment(parts[1], parts[2], parts[3], parts[4]);
+                if (!enrollments.contains(newEnrollment)) {
+                    enrollments.add(newEnrollment);
                 }
             }
         }
 
-        courses.sort((c1, c2) -> {
-            int creditCompare = Integer.compare(c1.getCreditHours(), c2.getCreditHours());
-            return creditCompare != 0 ? creditCompare : c1.getId().compareTo(c2.getId());
-        });
-        students.sort((s1, s2) -> {
-            int yearCompare = Integer.compare(s1.getYear(), s2.getYear());
-            return yearCompare != 0 ? yearCompare : s1.getId().compareTo(s2.getId());
-        });
-        enrollments.sort((e1, e2) -> {
-            int courseCompare = e1.getCourseId().compareTo(e2.getCourseId());
-            return courseCompare != 0 ? courseCompare : e1.getStudentId().compareTo(e2.getStudentId());
-        });
+        // Sort courses by credit hours first, then alphabetically by ID
+        Collections.sort(courses, Comparator.comparingInt(Course::getCreditHours).thenComparing(Course::getId));
+        // Sort students by year first, then alphabetically by ID
+        Collections.sort(students, Comparator.comparingInt(Student::getYear).thenComparing(Student::getId));
+        // Sort enrollments by course ID and then by student ID
+        Collections.sort(enrollments, Comparator.comparing(Enrollment::getCourseId).thenComparing(Enrollment::getStudentId));
 
+        // Print sorted courses
         for (Course course : courses) {
             System.out.println(course);
         }
+        // Print sorted students
         for (Student student : students) {
             System.out.println(student);
         }
+        // Print sorted enrollments
         for (Enrollment enrollment : enrollments) {
             System.out.println(enrollment);
         }
