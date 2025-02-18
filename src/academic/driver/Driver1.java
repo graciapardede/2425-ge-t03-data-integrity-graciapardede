@@ -49,9 +49,18 @@ public class Driver1 {
             }
         }
 
-        courses.sort((c1, c2) -> c1.getId().compareTo(c2.getId()));
-        students.sort((s1, s2) -> s1.getId().compareTo(s2.getId()));
-        enrollments.sort((e1, e2) -> e1.getCourseId().compareTo(e2.getCourseId()));
+        courses.sort((c1, c2) -> {
+            int creditCompare = Integer.compare(c1.getCreditHours(), c2.getCreditHours());
+            return creditCompare != 0 ? creditCompare : c1.getId().compareTo(c2.getId());
+        });
+        students.sort((s1, s2) -> {
+            int yearCompare = Integer.compare(s1.getYear(), s2.getYear());
+            return yearCompare != 0 ? yearCompare : s1.getId().compareTo(s2.getId());
+        });
+        enrollments.sort((e1, e2) -> {
+            int courseCompare = e1.getCourseId().compareTo(e2.getCourseId());
+            return courseCompare != 0 ? courseCompare : e1.getStudentId().compareTo(e2.getStudentId());
+        });
 
         for (Course course : courses) {
             System.out.println(course);
