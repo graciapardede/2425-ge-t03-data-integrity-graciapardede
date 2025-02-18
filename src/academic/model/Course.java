@@ -21,6 +21,10 @@ public class Course {
         return id;
     }
 
+    public int getCreditHours() {
+        return credits;
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
@@ -34,6 +38,7 @@ public class Course {
         return Objects.hash(id);
     }
 
+    
     @Override
     public String toString() {
         return id + "|" + name + "|" + credits + "|" + grade;

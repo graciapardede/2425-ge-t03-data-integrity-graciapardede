@@ -1,10 +1,5 @@
 package academic.driver;
 
-/**
- * @autor 12S23004 Fernando Alexander Silitonga
- * @autor 12S23044 Gracia Pardede
- */
-
 import academic.model.Course;
 import academic.model.Student;
 import academic.model.Enrollment;
@@ -33,47 +28,30 @@ public class Driver1 {
 
             if (command.equals("course-add") && parts.length == 5) {
                 Course newCourse = new Course(parts[1], parts[2], Integer.parseInt(parts[3]), parts[4]);
-                boolean exists = false;
-                for (Course course : courses) {
-                    if (course.equals(newCourse)) {
-                        exists = true;
-                        break;
-                    }
-                }
-                if (!exists) {
+                if (!courses.contains(newCourse)) {
                     courses.add(newCourse);
                 }
             } 
             else if (command.equals("student-add") && parts.length == 5) {
                 Student newStudent = new Student(parts[1], parts[2], Integer.parseInt(parts[3]), parts[4]);
-                boolean exists = false;
-                for (Student student : students) {
-                    if (student.equals(newStudent)) {
-                        exists = true;
-                        break;
-                    }
-                }
-                if (!exists) {
+                if (!students.contains(newStudent)) {
                     students.add(newStudent);
                 }
             } 
             else if (command.equals("enrollment-add") && parts.length == 5) {
                 Enrollment newEnrollment = new Enrollment(parts[1], parts[2], parts[3], parts[4]);
-                boolean exists = false;
-                for (Enrollment enrollment : enrollments) {
-                    if (enrollment.equals(newEnrollment)) {
-                        exists = true;
-                        break;
-                    }
-                }
-                if (!exists) {
+                if (!enrollments.contains(newEnrollment)) {
                     enrollments.add(newEnrollment);
                 }
             }
         }
 
-        // Sort courses by ID
-        Collections.sort(courses, Comparator.comparing(Course::getId));
+        // Sort courses by credit hours first, then alphabetically by ID
+        Collections.sort(courses, Comparator.comparingInt(Course::getCreditHours).thenComparing(Course::getId));
+        // Sort students by year first, then alphabetically by ID
+        Collections.sort(students, Comparator.comparingInt(Student::getYear).thenComparing(Student::getId));
+        // Sort enrollments by course ID and then by student ID
+        Collections.sort(enrollments, Comparator.comparing(Enrollment::getCourseId).thenComparing(Enrollment::getStudentId));
 
         for (Course course : courses) {
             System.out.println(course);

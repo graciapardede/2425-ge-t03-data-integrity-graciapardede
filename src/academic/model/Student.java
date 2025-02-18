@@ -21,6 +21,10 @@ public class Student {
         return id;
     }
 
+    public int getYear() {
+        return year;
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
