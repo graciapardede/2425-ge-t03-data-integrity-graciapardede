@@ -9,6 +9,8 @@ import academic.model.Course;
 import academic.model.Student;
 import academic.model.Enrollment;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Scanner;
 
 public class Driver1 {
@@ -69,6 +71,13 @@ public class Driver1 {
                 }
             }
         }
+
+        // Sort courses by ID
+        Collections.sort(courses, Comparator.comparing(Course::getId));
+        // Sort students by ID
+        Collections.sort(students, Comparator.comparing(Student::getId));
+        // Sort enrollments by course ID and then by student ID
+        Collections.sort(enrollments, Comparator.comparing(Enrollment::getCourseId).thenComparing(Enrollment::getStudentId));
 
         for (Course course : courses) {
             System.out.println(course);
