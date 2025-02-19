@@ -1,22 +1,28 @@
 package academic.driver;
 
+/**
+ * @autor 12S23004 Fernando Alexander Silitonga
+ * @autor 12S23044 Gracia Pardede
+ */
+
 import academic.model.Course;
 import academic.model.Student;
 import academic.model.Enrollment;
 
-import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.Collections;
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.Scanner;
 
 public class Driver1 {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        ArrayList<Course> courses = new ArrayList<>();
-        ArrayList<Student> students = new ArrayList<>();
-        ArrayList<Enrollment> enrollments = new ArrayList<>();
-        HashSet<String> courseIds = new HashSet<>();
-        HashSet<String> studentIds = new HashSet<>();
-        HashSet<String> enrollmentIds = new HashSet<>();
+        LinkedList<Course> courses = new LinkedList<>();
+        LinkedList<Student> students = new LinkedList<>();
+        LinkedList<Enrollment> enrollments = new LinkedList<>();
+        LinkedHashSet<String> courseIds = new LinkedHashSet<>();
+        LinkedHashSet<String> studentIds = new LinkedHashSet<>();
+        LinkedHashSet<String> enrollmentIds = new LinkedHashSet<>();
 
         while (true) {
             String input = scanner.nextLine();
@@ -42,46 +48,30 @@ public class Driver1 {
                 }
             } 
             else if (command.equals("enrollment-add") && parts.length == 5) {
-                String enrollmentId = parts[1] + "#" + parts[2] + "#" + parts[3] + "#" + parts[4];
+                String courseId = parts[1];
+                String studentId = parts[2];
+                String enrollmentId = courseId + "#" + studentId + "#" + parts[3] + "#" + parts[4];
                 if (!enrollmentIds.contains(enrollmentId)) {
-                    enrollments.add(new Enrollment(parts[1], parts[2], parts[3], parts[4]));
+                    enrollments.add(new Enrollment(courseId, studentId, parts[3], parts[4]));
                     enrollmentIds.add(enrollmentId);
                 }
             }
         }
 
-        // Sort courses by credit hours first, then by ID with letters first, then numbers
-        courses.sort((c1, c2) -> {
-            int creditCompare = Integer.compare(c1.getCreditHours(), c2.getCreditHours());
-            if (creditCompare != 0) return creditCompare;
-            boolean c1IsLetter = Character.isLetter(c1.getId().charAt(0));
-            boolean c2IsLetter = Character.isLetter(c2.getId().charAt(0));
-            if (c1IsLetter && !c2IsLetter) return -1;
-            if (!c1IsLetter && c2IsLetter) return 1;
-            return c1.getId().compareTo(c2.getId());
-        });
+        // Reverse the order of courses
+        Collections.reverse(courses);
 
-        // Sort students by year first, then alphabetically by ID
-        students.sort((s1, s2) -> {
-            int yearCompare = Integer.compare(s1.getYear(), s2.getYear());
-            return yearCompare != 0 ? yearCompare : s1.getId().compareTo(s2.getId());
-        });
-
-        // Sort enrollments by course ID and then by student ID
-        enrollments.sort((e1, e2) -> {
-            int courseCompare = e1.getCourseId().compareTo(e2.getCourseId());
-            return courseCompare != 0 ? courseCompare : e1.getStudentId().compareTo(e2.getStudentId());
-        });
-
-        // Print sorted courses
+        // Print reversed courses
         for (Course course : courses) {
             System.out.println(course);
         }
-        // Print sorted students
+
+        // Print students in the order they were added
         for (Student student : students) {
             System.out.println(student);
         }
-        // Print sorted enrollments
+
+        // Print enrollments in the order they were added
         for (Enrollment enrollment : enrollments) {
             System.out.println(enrollment);
         }

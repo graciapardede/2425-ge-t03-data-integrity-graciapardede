@@ -1,22 +1,24 @@
 package academic.driver;
 
-/**
- * @autor 12S23004 Fernando Alexander Silitonga
- * @autor 12S23044 Gracia Pardede
- */
-
 import academic.model.Course;
 import academic.model.Student;
 import academic.model.Enrollment;
-import java.util.ArrayList;
+
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.Scanner;
 
 public class Driver2 {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        ArrayList<Course> courses = new ArrayList<>();
-        ArrayList<Student> students = new ArrayList<>();
-        ArrayList<Enrollment> enrollments = new ArrayList<>();
+        LinkedList<Course> courses = new LinkedList<>();
+        LinkedList<Student> students = new LinkedList<>();
+        LinkedList<Enrollment> enrollments = new LinkedList<>();
+        HashSet<String> courseIds = new HashSet<>();
+        LinkedHashSet<String> studentIds = new LinkedHashSet<>();
+        HashSet<String> enrollmentIds = new HashSet<>();
 
         while (true) {
             String input = scanner.nextLine();
@@ -30,80 +32,54 @@ public class Driver2 {
             String command = parts[0];
 
             if (command.equals("course-add") && parts.length == 5) {
-                Course newCourse = new Course(parts[1], parts[2], Integer.parseInt(parts[3]), parts[4]);
-                boolean exists = false;
-                for (Course course : courses) {
-                    if (course.equals(newCourse)) {
-                        exists = true;
-                        break;
-                    }
-                }
-                if (!exists) {
-                    courses.add(newCourse);
+                if (!courseIds.contains(parts[1])) {
+                    courses.add(new Course(parts[1], parts[2], Integer.parseInt(parts[3]), parts[4]));
+                    courseIds.add(parts[1]);
                 }
             } 
             else if (command.equals("student-add") && parts.length == 5) {
-                Student newStudent = new Student(parts[1], parts[2], Integer.parseInt(parts[3]), parts[4]);
-                boolean exists = false;
-                for (Student student : students) {
-                    if (student.equals(newStudent)) {
-                        exists = true;
-                        break;
-                    }
-                }
-                if (!exists) {
-                    students.add(newStudent);
+                if (!studentIds.contains(parts[1])) {
+                    students.add(new Student(parts[1], parts[2], Integer.parseInt(parts[3]), parts[4]));
+                    studentIds.add(parts[1]);
                 }
             } 
             else if (command.equals("enrollment-add") && parts.length == 5) {
                 String courseId = parts[1];
                 String studentId = parts[2];
-                boolean courseExists = false;
-                boolean studentExists = false;
-
-                for (Course course : courses) {
-                    if (course.getId().equals(courseId)) {
-                        courseExists = true;
-                        break;
-                    }
-                }
-
-                for (Student student : students) {
-                    if (student.getId().equals(studentId)) {
-                        studentExists = true;
-                        break;
-                    }
-                }
-
-                if (courseExists && studentExists) {
-                    Enrollment newEnrollment = new Enrollment(courseId, studentId, parts[3], parts[4]);
-                    boolean exists = false;
-                    for (Enrollment enrollment : enrollments) {
-                        if (enrollment.equals(newEnrollment)) {
-                            exists = true;
-                            break;
-                        }
-                    }
-                    if (!exists) {
-                        enrollments.add(newEnrollment);
-                    }
+                if (!courseIds.contains(courseId)) {
+                    System.out.println("invalid course|" + courseId);
+                } else if (!studentIds.contains(studentId)) {
+                    System.out.println("invalid student|" + studentId);
                 } else {
-                    if (!courseExists) {
-                        System.out.println("invalid course|" + courseId);
-                    }
-                    if (!studentExists) {
-                        System.out.println("invalid student|" + studentId);
+                    String enrollmentId = courseId + "#" + studentId + "#" + parts[3] + "#" + parts[4];
+                    if (!enrollmentIds.contains(enrollmentId)) {
+                        enrollments.add(new Enrollment(courseId, studentId, parts[3], parts[4]));
+                        enrollmentIds.add(enrollmentId);
                     }
                 }
             }
         }
 
+        // Reverse the order of courses
+        Collections.reverse(courses);
+
+        // Print reversed courses
         for (Course course : courses) {
             System.out.println(course);
         }
+
+        // Print students in the order they were added
         for (Student student : students) {
             System.out.println(student);
         }
+
+        // Sort enrollments by course ID and then by student ID
+        enrollments.sort((e1, e2) -> {
+            int courseCompare = e1.getCourseId().compareTo(e2.getCourseId());
+            return courseCompare != 0 ? courseCompare : e1.getStudentId().compareTo(e2.getStudentId());
+        });
+
+        // Print sorted enrollments
         for (Enrollment enrollment : enrollments) {
             System.out.println(enrollment);
         }

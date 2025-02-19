@@ -1,5 +1,6 @@
 package academic.model;
 
+
 import java.util.Objects;
 
 public class Enrollment {

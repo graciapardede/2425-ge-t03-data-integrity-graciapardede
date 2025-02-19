@@ -1,5 +1,10 @@
 package academic.model;
 
+/**
+ * @autor 12S23004 Fernando Alexander Silitonga
+ * @autor 12S23044 Gracia Pardede
+ */
+
 import java.util.Objects;
 
 public class Student {
