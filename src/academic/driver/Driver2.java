@@ -36,6 +36,7 @@ public class Driver2 {
                     courses.add(new Course(parts[1], parts[2], Integer.parseInt(parts[3]), parts[4]));
                     courseIds.add(parts[1]);
                 }
+                
             } 
             else if (command.equals("student-add") && parts.length == 5) {
                 if (!studentIds.contains(parts[1])) {
